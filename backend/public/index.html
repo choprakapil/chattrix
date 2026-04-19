@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Growlytics — Grow Smarter, Not Harder</title>
+  <meta name="description"
+    content="Growlytics is a modern SaaS analytics platform that helps businesses scale faster with data-driven insights and real-time intelligence." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ─── Reset & Base ─── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #0F172A;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ─── CSS Variables ─── */
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --secondary: #7C3AED;
+      --gradient: linear-gradient(135deg, #2563EB, #7C3AED);
+      --gradient-soft: linear-gradient(135deg, #EFF6FF, #F5F3FF);
+      --text: #0F172A;
+      --text2: #475569;
+      --text3: #94A3B8;
+      --border: #E5E7EB;
+      --bg: #F8FAFC;
+      --white: #FFFFFF;
+      --success: #22C55E;
+      --r-sm: 10px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-xl: 28px;
+      --shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 16px 48px rgba(15, 23, 42, 0.12);
+      --shadow-brand: 0 8px 32px rgba(37, 99, 235, 0.28);
+    }
+
+    /* ─── Scrollbar ─── */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 10px;
+    }
+
+    /* ─── Utility ─── */
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .section {
+      padding: 96px 0;
+    }
+
+    .section-alt {
+      background: var(--bg);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.08);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      border: 1px solid rgba(37, 99, 235, 0.18);
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--text2);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    .section-header {
+      margin-bottom: 60px;
+    }
+
+    .section-header.center {
+      text-align: center;
+    }
+
+    .section-header.center .section-sub {
+      margin: 0 auto;
+    }
+
+    .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: var(--r-md);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: var(--shadow-brand);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px rgba(37, 99, 235, 0.36);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(37, 99, 235, 0.04);
+    }
+
+    .btn-sm {
+      padding: 9px 20px;
+      font-size: 13px;
+    }
+
+    /* ═══════════════════════════════════════
+       1. HEADER / NAV
+    ═══════════════════════════════════════ */
+    #header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+      transition: box-shadow 0.2s ease;
+    }
+
+    #header.scrolled {
+      box-shadow: 0 2px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.30);
+    }
+
+    .nav-logo-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .nav-logo-text {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      padding: 8px 14px;
+      border-radius: var(--r-sm);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text2);
+      transition: all 0.15s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-login {
+      padding: 9px 18px;
+      border-radius: var(--r-sm);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .nav-login:hover {
+      color: var(--primary);
+    }
+
+    .nav-mobile-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    /* ═══════════════════════════════════════
+       2. HERO
+    ═══════════════════════════════════════ */
+    #hero {
+      padding: 160px 0 88px;
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .hero-blob-1 {
+      width: 480px;
+      height: 480px;
+      background: #DBEAFE;
+      top: -120px;
+      right: -100px;
+    }
+
+    .hero-blob-2 {
+      width: 340px;
+      height: 340px;
+      background: #EDE9FE;
+      bottom: -80px;
+      left: -60px;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px 6px 6px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .hero-badge-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--gradient);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-badge-text {
+      color: var(--text2);
+    }
+
+    .hero-title {
+      font-size: clamp(38px, 6vw, 66px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 24px;
+      max-width: 720px;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text2);
+      line-height: 1.7;
+      max-width: 560px;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+
+    .hero-social-proof {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-top: 8px;
+    }
+
+    .proof-avatars {
+      display: flex;
+    }
+
+    .proof-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      margin-left: -10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      background: var(--gradient);
+    }
+
+    .proof-avatar:first-child {
+      margin-left: 0;
+    }
+
+    .proof-text {
+      font-size: 13px;
+      color: var(--text2);
+      font-weight: 600;
+    }
+
+    .proof-text span {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    /* Hero Mockup */
+    .hero-mockup {
+      margin-top: 64px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-mockup-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .mockup-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .hero-mockup-screen {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      min-height: 220px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+
+    .mockup-card {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .mockup-card-value {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .mockup-card-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .mockup-bar-chart {
+      grid-column: span 3;
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 80px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      border-radius: 6px 6px 0 0;
+      background: var(--gradient);
+      opacity: 0.75;
+      animation: grow-bar 1.2s ease forwards;
+      transform-origin: bottom;
+    }
+
+    @keyframes grow-bar {
+      from {
+        transform: scaleY(0);
+      }
+
+      to {
+        transform: scaleY(1);
+      }
+    }
+
+    /* ═══════════════════════════════════════
+       3. LOGOS / TRUST BAR
+    ═══════════════════════════════════════ */
+    #trust {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .trust-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 28px;
+    }
+
+    .trust-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 44px;
+      flex-wrap: wrap;
+    }
+
+    .trust-logo {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--text3);
+      letter-spacing: -0.02em;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    .trust-logo:hover {
+      opacity: 1;
+    }
+
+    /* ═══════════════════════════════════════
+       4. FEATURES
+    ═══════════════════════════════════════ */
+    #features {
+      background: #fff;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      padding: 28px;
+      border-radius: var(--r-lg);
+      background: #fff;
+      border: 1px solid var(--border);
+      transition: all 0.22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient-soft);
+      opacity: 0;
+      transition: opacity 0.22s ease;
+      z-index: 0;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: transparent;
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-card>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.22);
+    }
+
+    .feature-icon svg {
+      width: 22px;
+      height: 22px;
+      color: #fff;
+    }
+
+    .feature-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════
+       5. HOW IT WORKS
+    ═══════════════════════════════════════ */
+    #how {
+      background: var(--bg);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .step-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px 24px;
+      position: relative;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .step-card:hover {
+      box-shadow: var(--shadow);
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--gradient);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.65;
+    }
+
+    .step-connector {
+      position: absolute;
+      top: 50px;
+      right: -14px;
+      width: 28px;
+      height: 2px;
+      background: var(--border);
+      z-index: 1;
+    }
+
+    .step-card:last-child .step-connector {
+      display: none;
+    }
+
+    /* ═══════════════════════════════════════
+       6. TESTIMONIALS
+    ═══════════════════════════════════════ */
+    #testimonials {
+      background: #fff;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .testimonial-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px;
+      transition: all 0.2s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .testimonial-stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 16px;
+    }
+
+    .star {
+      font-size: 14px;
+    }
+
+    .testimonial-text {
+      font-size: 15px;
+      color: var(--text2);
+      line-height: 1.7;
+      margin-bottom: 22px;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .author-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gradient);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .author-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .author-role {
+      font-size: 12px;
+      color: var(--text3);
+      font-weight: 500;
+    }
+
+    /* ═══════════════════════════════════════
+       7. PRICING
+    ═══════════════════════════════════════ */
+    #pricing {
+      background: var(--bg);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .pricing-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 36px 32px;
+      position: relative;
+      transition: all 0.22s ease;
+    }
+
+    .pricing-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+
+    .pricing-card.featured {
+      background: var(--text);
+      border-color: var(--text);
+      color: #fff;
+      transform: scale(1.04);
+    }
+
+    .pricing-card.featured:hover {
+      transform: scale(1.04) translateY(-3px);
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.22);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 5px 16px;
+      border-radius: 999px;
+      background: var(--gradient);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .pricing-plan {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text3);
+      margin-bottom: 10px;
+    }
+
+    .pricing-card.featured .pricing-plan {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .pricing-price {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 6px;
+      letter-spacing: -0.03em;
+    }
+
+    .pricing-price span {
+      font-size: 18px;
+      font-weight: 600;
+      vertical-align: top;
+      margin-top: 8px;
+      display: inline-block;
+    }
+
+    .pricing-period {
+      font-size: 13px;
+      color: var(--text3);
+      margin-bottom: 28px;
+    }
+
+    .pricing-card.featured .pricing-period {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .pricing-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 24px;
+    }
+
+    .pricing-card.featured .pricing-divider {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text2);
+    }
+
+    .pricing-card.featured .pricing-features li {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .pricing-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(34, 197, 94, 0.12);
+    }
+
+    .pricing-card.featured .pricing-check {
+      background: rgba(34, 197, 94, 0.22);
+    }
+
+    .pricing-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: var(--r-md);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all 0.18s ease;
+      text-align: center;
+    }
+
+    .pricing-btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text);
+    }
+
+    .pricing-btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .pricing-btn-primary {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: var(--shadow-brand);
+    }
+
+    .pricing-btn-primary:hover {
+      box-shadow: 0 14px 40px rgba(37, 99, 235, 0.36);
+      transform: translateY(-1px);
+    }
+
+    .pricing-btn-white {
+      background: #fff;
+      color: var(--text);
+    }
+
+    .pricing-btn-white:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    /* ═══════════════════════════════════════
+       8. CTA SECTION
+    ═══════════════════════════════════════ */
+    #cta {
+      background: var(--text);
+      padding: 96px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .cta-blob-1 {
+      width: 400px;
+      height: 400px;
+      background: #2563EB;
+      top: -100px;
+      left: -80px;
+    }
+
+    .cta-blob-2 {
+      width: 300px;
+      height: 300px;
+      background: #7C3AED;
+      bottom: -80px;
+      right: -60px;
+    }
+
+    .cta-inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .cta-title {
+      font-size: clamp(30px, 4vw, 46px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+
+    .cta-sub {
+      font-size: 17px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 40px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.65;
+    }
+
+    .cta-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-white {
+      background: #fff;
+      color: var(--text);
+    }
+
+    .btn-white:hover {
+      background: #F1F5F9;
+    }
+
+    .btn-ghost-light {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.7);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-ghost-light:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* ═══════════════════════════════════════
+       9. FOOTER
+    ═══════════════════════════════════════ */
+    #footer {
+      background: #0A0F1E;
+      padding: 64px 0 32px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 56px;
+    }
+
+    .footer-brand-text {
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 260px;
+    }
+
+    .footer-col-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 18px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.55);
+      transition: color 0.15s ease;
+      font-weight: 500;
+    }
+
+    .footer-links a:hover {
+      color: #fff;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      padding-top: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+    }
+
+    .footer-credit {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .footer-credit span {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* ─── Animations ─── */
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .float {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 960px) {
+      .features-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+        margin: 0 auto;
+      }
+
+      .pricing-card.featured {
+        transform: scale(1);
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-mockup-screen {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .mockup-bar-chart {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .section {
+        padding: 64px 0;
+      }
+
+      #hero {
+        padding: 120px 0 64px;
+      }
+
+      .nav-links,
+      .nav-login {
+        display: none;
+      }
+
+      .nav-mobile-btn {
+        display: flex;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .trust-logos {
+        gap: 24px;
+      }
+
+      .trust-logo {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════ -->
+  <header id="header">
+    <div class="container">
+      <nav class="nav">
+        <a href="#" class="nav-logo">
+          <div class="nav-logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+          </div>
+          <span class="nav-logo-text gradient-text">Growlytics</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how">How It Works</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <a href="dashboard/" class="nav-login">Log in</a>
+          <a href="#cta" class="btn btn-primary btn-sm">Start Free Trial</a>
+        </div>
+
+        <button class="nav-mobile-btn"
+          onclick="this.closest('header').querySelector('.nav-links-mobile')?.classList?.toggle('open')"
+          aria-label="Menu">
+          <svg width="22" height="22" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="19" y2="6" />
+            <line x1="3" y1="12" x2="19" y2="12" />
+            <line x1="3" y1="18" x2="19" y2="18" />
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="container hero-inner">
+      <div class="hero-badge">
+        <span class="hero-badge-pill">NEW</span>
+        <span class="hero-badge-text">Growlytics 3.0 is here — Smart AI Insights</span>
+        <svg width="14" height="14" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" viewBox="0 0 24 24">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </div>
+
+      <h1 class="hero-title">
+        Grow Smarter,<br />
+        Not <span class="gradient-text">Harder.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Growlytics gives your team real-time analytics, AI-powered insights, and live customer support — all in one
+        platform built for modern businesses that move fast.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-primary">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+          Start for Free
+        </a>
+        <a href="#how" class="btn btn-outline">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <polygon points="10 8 16 12 10 16 10 8" />
+          </svg>
+          Watch Demo
+        </a>
+      </div>
+
+      <div class="hero-social-proof">
+        <div class="proof-avatars">
+          <div class="proof-avatar" style="background:linear-gradient(135deg,#2563EB,#3B82F6)">K</div>
+          <div class="proof-avatar" style="background:linear-gradient(135deg,#7C3AED,#9333EA)">A</div>
+          <div class="proof-avatar" style="background:linear-gradient(135deg,#059669,#22C55E)">R</div>
+          <div class="proof-avatar" style="background:linear-gradient(135deg,#D97706,#F59E0B)">S</div>
+          <div class="proof-avatar" style="background:linear-gradient(135deg,#DC2626,#EF4444)">M</div>
+        </div>
+        <p class="proof-text"><span>2,400+</span> teams already growing with Growlytics</p>
+      </div>
+
+      <!-- Dashboard Mockup -->
+      <div class="hero-mockup float" style="animation-delay:0.3s">
+        <div class="hero-mockup-bar">
+          <div class="mockup-dot" style="background:#EF4444"></div>
+          <div class="mockup-dot" style="background:#F59E0B"></div>
+          <div class="mockup-dot" style="background:#22C55E"></div>
+          <span style="margin-left:10px;font-size:12px;color:#94A3B8;font-weight:600">Growlytics Dashboard</span>
+        </div>
+        <div class="hero-mockup-screen">
+          <div class="mockup-card">
+            <div class="mockup-card-value" style="color:#2563EB">48.2K</div>
+            <div class="mockup-card-label">Visitors Today</div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-value" style="color:#7C3AED">$94.7K</div>
+            <div class="mockup-card-label">Monthly Revenue</div>
+          </div>
+          <div class="mockup-card">
+            <div class="mockup-card-value" style="color:#22C55E">+23%</div>
+            <div class="mockup-card-label">Growth Rate</div>
+          </div>
+          <div class="mockup-bar-chart">
+            <div class="chart-bar" style="height:40%;animation-delay:0.0s"></div>
+            <div class="chart-bar" style="height:60%;animation-delay:0.1s"></div>
+            <div class="chart-bar" style="height:45%;animation-delay:0.2s"></div>
+            <div class="chart-bar" style="height:75%;animation-delay:0.3s"></div>
+            <div class="chart-bar" style="height:55%;animation-delay:0.4s"></div>
+            <div class="chart-bar" style="height:90%;animation-delay:0.5s"></div>
+            <div class="chart-bar" style="height:70%;animation-delay:0.6s"></div>
+            <div class="chart-bar" style="height:85%;animation-delay:0.7s"></div>
+            <div class="chart-bar" style="height:95%;animation-delay:0.8s;opacity:1"></div>
+            <div class="chart-bar" style="height:80%;animation-delay:0.9s"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       TRUST BAR
+  ═══════════════════════════════════════ -->
+  <section id="trust">
+    <div class="container">
+      <p class="trust-label">Trusted by teams at fast-growing companies</p>
+      <div class="trust-logos">
+        <span class="trust-logo">Acme Corp</span>
+        <span class="trust-logo">Vercel Inc</span>
+        <span class="trust-logo">Stripe</span>
+        <span class="trust-logo">Notion</span>
+        <span class="trust-logo">Linear</span>
+        <span class="trust-logo">Figma</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       FEATURES
+  ═══════════════════════════════════════ -->
+  <section id="features" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="tag">
+          <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+          Features
+        </div>
+        <h2 class="section-title">Everything you need to <span class="gradient-text">grow faster</span></h2>
+        <p class="section-sub">From real-time analytics to live customer chat, Growlytics is the all-in-one platform
+          your team will love.</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1 -->
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              viewBox="0 0 24 24">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Real-Time Analytics</h3>
+          <p class="feature-desc">Monitor your KPIs, traffic, and conversions as they happen with millisecond-accurate
+            dashboards and instant alerts.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:linear-gradient(135deg,#7C3AED,#9333EA)">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              viewBox="0 0 24 24">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Live Customer Chat</h3>
+          <p class="feature-desc">Support customers in real time with our embedded chat widget. Assign agents, track
+            conversations, and never miss a message.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:linear-gradient(135deg,#059669,#22C55E)">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              viewBox="0 0 24 24">
+              <path
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">AI-Powered Insights</h3>
+          <p class="feature-desc">Let our AI surface actionable recommendations, predict churn, and highlight your best
+            growth opportunities automatically.</p>
+        </div>
+        <!-- Feature 4 -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:linear-gradient(135deg,#D97706,#F59E0B)">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Seamless Integrations</h3>
+          <p class="feature-desc">Connect to tools you already love — Slack, Hubspot, Stripe, Notion, and 100+ others —
+            with one-click integrations.</p>
+        </div>
+        <!-- Feature 5 -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:linear-gradient(135deg,#DC2626,#EF4444)">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Enterprise Security</h3>
+          <p class="feature-desc">SOC 2 Type II certified, end-to-end encrypted, with SSO, RBAC, and audit logs to keep
+            your data safe at every layer.</p>
+        </div>
+        <!-- Feature 6 -->
+        <div class="feature-card">
+          <div class="feature-icon" style="background:linear-gradient(135deg,#0891B2,#06B6D4)">
+            <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Global CDN</h3>
+          <p class="feature-desc">Lightning-fast performance for your customers worldwide with edge delivery, <50ms
+              response times, and 99.99% uptime SLA.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       HOW IT WORKS
+  ═══════════════════════════════════════ -->
+  <section id="how" class="section section-alt">
+    <div class="container">
+      <div class="section-header center">
+        <div class="tag">How It Works</div>
+        <h2 class="section-title">Up and running <span class="gradient-text">in minutes</span></h2>
+        <p class="section-sub">Getting started with Growlytics is easy. No engineering degree required.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-connector"></div>
+          <div class="step-number">1</div>
+          <h3 class="step-title">Create Your Account</h3>
+          <p class="step-desc">Sign up in 30 seconds with your email. No credit card required to start your 14-day
+            trial.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-connector"></div>
+          <div class="step-number">2</div>
+          <h3 class="step-title">Add Your Property</h3>
+          <p class="step-desc">Enter your website URL and get a unique embed script generated instantly for your domain.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-connector"></div>
+          <div class="step-number">3</div>
+          <h3 class="step-title">Paste the Script</h3>
+          <p class="step-desc">Drop one &lt;script&gt; tag into your site's HTML. The chat widget appears automatically
+            for your visitors.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3 class="step-title">Start Growing</h3>
+          <p class="step-desc">Assign your support agents, watch live conversations roll in, and convert more visitors
+            into customers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       TESTIMONIALS
+  ═══════════════════════════════════════ -->
+  <section id="testimonials" class="section">
+    <div class="container">
+      <div class="section-header center">
+        <div class="tag">Testimonials</div>
+        <h2 class="section-title">Loved by <span class="gradient-text">growth teams</span></h2>
+        <p class="section-sub">Don't take our word for it. Here's what our customers have to say.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span
+              class="star">⭐</span><span class="star">⭐</span>
+          </div>
+          <p class="testimonial-text">"Growlytics completely transformed how we understand our customers. The real-time
+            chat feature alone has helped us recover 30+ deals this quarter."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:linear-gradient(135deg,#2563EB,#3B82F6)">A</div>
+            <div>
+              <div class="author-name">Arjun Mehta</div>
+              <div class="author-role">Head of Growth, TechScale</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span
+              class="star">⭐</span><span class="star">⭐</span>
+          </div>
+          <p class="testimonial-text">"The embedded chat widget was live on our site in under 5 minutes. Our support
+            team absolutely loves the clean agent dashboard — it's Intercom quality at half the price."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:linear-gradient(135deg,#7C3AED,#9333EA)">S</div>
+            <div>
+              <div class="author-name">Sara Pinto</div>
+              <div class="author-role">CEO, LaunchPad Studio</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span
+              class="star">⭐</span><span class="star">⭐</span>
+          </div>
+          <p class="testimonial-text">"We switched from 3 different tools to just Growlytics. Analytics, live chat, and
+            customer insights — all in one place. Our conversion rate went up 18% in the first month."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background:linear-gradient(135deg,#059669,#22C55E)">R</div>
+            <div>
+              <div class="author-name">Rohan Singh</div>
+              <div class="author-role">Product Manager, Swiftly</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       PRICING
+  ═══════════════════════════════════════ -->
+  <section id="pricing" class="section section-alt">
+    <div class="container">
+      <div class="section-header center">
+        <div class="tag">Pricing</div>
+        <h2 class="section-title">Simple, <span class="gradient-text">transparent</span> pricing</h2>
+        <p class="section-sub">No hidden fees. No surprise bills. Cancel anytime.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Starter -->
+        <div class="pricing-card">
+          <p class="pricing-plan">Starter</p>
+          <div class="pricing-price"><span>$</span>29</div>
+          <p class="pricing-period">per month · billed monthly</p>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li>
+              <div class="pricing-check">✓</div> 1 Property
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> 2 Agent Seats
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> 5,000 chat sessions/mo
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> Basic Analytics
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> Email Support
+            </li>
+          </ul>
+          <button class="pricing-btn pricing-btn-outline">Get Started</button>
+        </div>
+
+        <!-- Pro (Featured) -->
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most Popular</div>
+          <p class="pricing-plan">Pro</p>
+          <div class="pricing-price"><span>$</span>79</div>
+          <p class="pricing-period">per month · billed monthly</p>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li>
+              <div class="pricing-check">✓</div> 10 Properties
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> 10 Agent Seats
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> Unlimited chat sessions
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> Advanced Analytics + AI
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> Priority Support
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> Custom Branding
+            </li>
+          </ul>
+          <button class="pricing-btn pricing-btn-white">Start Free Trial</button>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="pricing-card">
+          <p class="pricing-plan">Enterprise</p>
+          <div class="pricing-price" style="font-size:34px;letter-spacing:-0.02em">Custom</div>
+          <p class="pricing-period">contact for a tailored quote</p>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li>
+              <div class="pricing-check">✓</div> Unlimited Properties
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> Unlimited Agent Seats
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> Dedicated Infrastructure
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> SSO + RBAC + Audit Logs
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> 24/7 Dedicated Support
+            </li>
+            <li>
+              <div class="pricing-check">✓</div> SLA & Legal Contracts
+            </li>
+          </ul>
+          <button class="pricing-btn pricing-btn-outline">Contact Sales</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       CTA
+  ═══════════════════════════════════════ -->
+  <section id="cta">
+    <div class="cta-blob cta-blob-1"></div>
+    <div class="cta-blob cta-blob-2"></div>
+    <div class="container cta-inner">
+      <h2 class="cta-title">Ready to grow<br />your business?</h2>
+      <p class="cta-sub">Join 2,400+ companies using Growlytics to understand their customers and scale faster. Start
+        free — no card required.</p>
+      <div class="cta-actions">
+        <a href="#" class="btn btn-white">
+          <svg width="18" height="18" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+          Start Free Trial
+        </a>
+        <a href="#features" class="btn btn-ghost-light">Explore Features</a>
+      </div>
+      <p style="margin-top:24px;font-size:13px;color:rgba(255,255,255,0.35);">14-day free trial · No credit card ·
+        Cancel anytime</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════ -->
+  <footer id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand-text gradient-text">Growlytics</div>
+          <p class="footer-brand-desc">The all-in-one platform for modern businesses to understand, engage, and grow
+            their customer base.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Product</p>
+          <ul class="footer-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Company</p>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Legal</p>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Security</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2025 Growlytics. All rights reserved.</p>
+        <p class="footer-credit">Live chat powered by <span>Chattrix</span> · Design by <span>Kapil Chopra</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════
+       CHATTRIX WIDGET (LIVE DEPLOYMENT READY)
+  ═══════════════════════════════════════ -->
+  <script>
+    (function() {
+      var isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      var backendUrl = isLocal ? 'http://localhost:3001' : 'https://knyxsports.com/chat/api';
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = backendUrl + '/widget.js';
+      script.setAttribute('data-property-id', '174c89c2-b511-420f-9edf-a52b94d1d05d');
+      document.head.appendChild(script);
+    })();
+  </script>
+
+  <!-- ─── Scroll + Header JS ─── -->
+  <script>
+    // Header shadow on scroll
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Smooth reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(
+      '.feature-card, .step-card, .testimonial-card, .pricing-card, .section-header'
+    ).forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+
+</html>
