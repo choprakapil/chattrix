@@ -48,9 +48,21 @@ rsync -av --progress \
   landingpage/ ${REMOTE_HOST}:${REMOTE_DIR}/landingpage/
 echo -e "${GREEN}✅ Frontend assets synced.${RESET}"
 
-# ── Step 4: Run Post-Deploy on Server ──────────────────────
+# ── Step 4: Apply Database Schema ──────────────────────────
 echo ""
-echo -e "${YELLOW}⚙️  Step 4/4: Running post-deploy commands on server...${RESET}"
+echo -e "${YELLOW}🗄️  Step 4/5: Applying database schema (safe — no data loss)...${RESET}"
+ssh ${REMOTE_HOST} bash << 'ENDSSH'
+  set -a
+  source /home/kapil/apps/knyxjs/chat/backend/.env
+  set +a
+  mysql -u"${DB_USER}" -p"${DB_PASSWORD}" -h"${DB_HOST}" "${DB_NAME}" < /home/kapil/apps/knyxjs/chat/backend/src/db/schema.sql
+  echo "✅ Schema applied."
+ENDSSH
+echo -e "${GREEN}✅ Database schema is up to date.${RESET}"
+
+# ── Step 5: Run Post-Deploy on Server ──────────────────────
+echo ""
+echo -e "${YELLOW}⚙️  Step 5/5: Running post-deploy commands on server...${RESET}"
 ssh ${REMOTE_HOST} bash << 'ENDSSH'
   set -e
   cd /home/kapil/apps/knyxjs/chat
