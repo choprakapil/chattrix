@@ -8,6 +8,7 @@ yarn-error.log*
 # Build
 dist/
 build/
+frontend/dist/
 backend/public/dashboard/
 
 # Environment Variables
