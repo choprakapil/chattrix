@@ -36,13 +36,30 @@ function createChatRouter({ io }) {
         const prop = propRows[0];
         console.log("[Chat/start] ✓ Property found:", prop.name, "(db id:", prop.id, ")");
 
-        // Step 2: Create the chat record
+        // Step 2: Create the chat record with tracking metadata
+        const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || "").split(',')[0].trim();
+        const url = req.body.url || "";
+        const browser = req.body.browser || "";
+        const os = req.body.os || "";
+
         const result = await query(
-          "INSERT INTO chats (property_id, visitor_name, visitor_email, visitor_phone) VALUES (?, ?, ?, ?)",
-          [prop.id, req.body.name.trim(), req.body.email.trim(), req.body.phone.trim()]
+          "INSERT INTO chats (property_id, visitor_name, visitor_email, visitor_phone, visitor_ip, visitor_url, visitor_browser, visitor_os) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+          [prop.id, req.body.name.trim(), req.body.email.trim(), req.body.phone.trim(), ip, url, browser, os]
         );
         const chatId = result.insertId;
         console.log("[Chat/start] ✓ Chat created, chatId:", chatId);
+
+        // Async Geo-lookup so it doesn't block the request
+        if (ip && ip !== "::1" && ip !== "127.0.0.1") {
+          fetch(`http://ip-api.com/json/${ip}`)
+            .then(r => r.json())
+            .then(d => {
+              if (d.status === "success") {
+                const loc = `${d.city}, ${d.country}`;
+                query("UPDATE chats SET visitor_location = ? WHERE id = ?", [loc, chatId]).catch(()=>{});
+              }
+            }).catch(()=>{});
+        }
 
         // Step 3: Save opening message
         await query(

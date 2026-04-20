@@ -1768,17 +1768,8 @@
   <!-- ═══════════════════════════════════════
        CHATTRIX WIDGET (LIVE DEPLOYMENT READY)
   ═══════════════════════════════════════ -->
-  <script>
-    (function() {
-      var isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      var backendUrl = isLocal ? 'http://localhost:3010' : 'https://knyxsports.com/chat';
-      var script = document.createElement('script');
-      script.async = true;
-      script.src = backendUrl + '/widget.js';
-      script.setAttribute('data-property-id', '174c89c2-b511-420f-9edf-a52b94d1d05d');
-      document.head.appendChild(script);
-    })();
-  </script>
+  <script async src="https://knyxsports.com/chat/widget.js"
+    data-property-id="db738b89-92a3-4c39-970a-85a94fa9e9ca"></script>
 
   <!-- ─── Scroll + Header JS ─── -->
   <script>

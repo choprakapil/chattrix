@@ -13,26 +13,35 @@ function registerSocketHandlers(io, onlineAgents) {
   io.on("connection", (socket) => {
     socket.on("register_user", (payload) => mapUserSocket(socket, payload));
 
-    socket.on("join_property", async ({ propertyId, agentId }) => {
+    socket.on("join_property", async ({ propertyId, url }) => {
       socket.join(`property_${propertyId}`);
-      if (agentId) {
+      socket.data.visitorPropertyId = propertyId;
+      socket.data.visitorUrl = url || "Website";
+
+      const agents = await query("SELECT agent_id FROM property_agents WHERE property_id = (SELECT id FROM properties WHERE property_id = ?) AND status = 'accepted'", [propertyId]);
+      for (const row of agents) {
         await query("INSERT INTO notifications (agent_id, type, message) VALUES (?, ?, ?)", [
-          agentId,
+          row.agent_id,
           "visitor_entered_site",
-          `A visitor just entered property ${propertyId}`,
+          `A visitor just entered via ${socket.data.visitorUrl}`,
         ]);
-        io.to(onlineAgents.get(agentId)).emit("visitor_entered_site", { propertyId });
+        if (onlineAgents.has(row.agent_id)) {
+          io.to(onlineAgents.get(row.agent_id)).emit("visitor_entered_site", { propertyId, url: socket.data.visitorUrl });
+        }
       }
     });
 
-    socket.on("visitor_opened_chat", async ({ propertyId, agentId }) => {
-      if (agentId) {
+    socket.on("visitor_opened_chat", async ({ propertyId, url }) => {
+      const agents = await query("SELECT agent_id FROM property_agents WHERE property_id = (SELECT id FROM properties WHERE property_id = ?) AND status = 'accepted'", [propertyId]);
+      for (const row of agents) {
         await query("INSERT INTO notifications (agent_id, type, message) VALUES (?, ?, ?)", [
-          agentId,
+          row.agent_id,
           "visitor_opened_chat",
-          `Visitor opened chat on ${propertyId}`,
+          `Visitor just opened the chat panel on ${url || 'Website'}!`,
         ]);
-        io.to(onlineAgents.get(agentId)).emit("visitor_opened_chat", { propertyId });
+        if (onlineAgents.has(row.agent_id)) {
+          io.to(onlineAgents.get(row.agent_id)).emit("visitor_opened_chat", { propertyId, url: url || "Website" });
+        }
       }
     });
 
@@ -62,13 +71,27 @@ function registerSocketHandlers(io, onlineAgents) {
     });
 
     socket.on("disconnect", async () => {
+      // 1. Agent disconnects
       if (socket.data.user?.role === "agent") {
-        // Only set offline if this is the currently active socket for this agent
-        // This prevents page refreshes from marking them offline right after they reconnect
         if (onlineAgents.get(socket.data.user.id) === socket.id) {
           onlineAgents.delete(socket.data.user.id);
           await query("UPDATE agents SET status = 'offline' WHERE id = ?", [socket.data.user.id]);
           io.emit("agent_status_change", { agentId: socket.data.user.id, status: "offline" });
+        }
+      }
+      
+      // 2. Visitor disconnects
+      if (socket.data.visitorPropertyId) {
+        const agents = await query("SELECT agent_id FROM property_agents WHERE property_id = (SELECT id FROM properties WHERE property_id = ?) AND status = 'accepted'", [socket.data.visitorPropertyId]);
+        for (const row of agents) {
+          await query("INSERT INTO notifications (agent_id, type, message) VALUES (?, ?, ?)", [
+            row.agent_id,
+            "visitor_left_site",
+            `Visitor left ${socket.data.visitorUrl}`,
+          ]);
+          if (onlineAgents.has(row.agent_id)) {
+            io.to(onlineAgents.get(row.agent_id)).emit("visitor_left_site", { propertyId: socket.data.visitorPropertyId, url: socket.data.visitorUrl });
+          }
         }
       }
     });

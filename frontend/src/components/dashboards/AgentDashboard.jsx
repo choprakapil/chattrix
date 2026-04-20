@@ -21,6 +21,11 @@ import {
   XCircle,
   Zap,
   RefreshCw,
+  CheckCheck,
+  Check,
+  Copy,
+  MapPin,
+  MonitorSmartphone
 } from "lucide-react";
 
 const ALERT_SOUND = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
@@ -169,11 +174,18 @@ export default function AgentDashboard({ user, socket, onLogout, down }) {
       console.log("[Agent] agent_status_change →", d);
     };
 
+    const onMessageRead = (d) => {
+      if ((d.chatId === activeChatRef.current || d.chatId === String(activeChatRef.current)) && d.reader === "visitor") {
+        setMessages(prev => prev.map(m => m.sender === "agent" ? { ...m, is_read: 1 } : m));
+      }
+    };
+
     socket.on("agent_assigned", onAssign);
     socket.on("new_message", onMsg);
     socket.on("typing", onTyping);
     socket.on("stop_typing", onStopTyping);
     socket.on("agent_status_change", onAgentStatusChange);
+    socket.on("message_read", onMessageRead);
 
     return () => {
       socket.off("agent_assigned", onAssign);
@@ -181,6 +193,7 @@ export default function AgentDashboard({ user, socket, onLogout, down }) {
       socket.off("typing", onTyping);
       socket.off("stop_typing", onStopTyping);
       socket.off("agent_status_change", onAgentStatusChange);
+      socket.off("message_read", onMessageRead);
     };
   }, [socket, load]);
 
@@ -600,6 +613,11 @@ export default function AgentDashboard({ user, socket, onLogout, down }) {
                               {m?.created_at
                                 ? new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
                                 : ""}
+                              {m?.sender === "agent" && (
+                                <span style={{ marginLeft: 4, display: "inline-flex", verticalAlign: "middle" }}>
+                                  {m?.is_read ? <CheckCheck size={12} color="#60A5FA" /> : <Check size={12} color="#CBD5E1" />}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </motion.div>
@@ -754,6 +772,58 @@ export default function AgentDashboard({ user, socket, onLogout, down }) {
                     ))}
                   </div>
                 </div>
+
+                {/* Visitor Details (JSON Lead) */}
+                {activeChatInfo && (
+                  <div className="section-card" style={{ display: "flex", flexDirection: "column" }}>
+                    <div style={{
+                      display: "flex", alignItems: "center", gap: 10,
+                      padding: "0.875rem 1.25rem", borderBottom: "1px solid #E5E7EB", background: "#FAFAFA",
+                    }}>
+                      <MonitorSmartphone size={15} color="#2563EB" />
+                      <span style={{ fontWeight: 700, fontSize: 13, color: "#0F172A" }}>Visitor Details & Lead</span>
+                    </div>
+                    <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: 10, fontSize: 12 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                         <span style={{ color: "#64748B", fontWeight: 600 }}>IP Address</span>
+                         <span style={{ color: "#0F172A", fontWeight: 700 }}>{activeChatInfo.visitor_ip || "Unknown"}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                         <span style={{ color: "#64748B", fontWeight: 600 }}><MapPin size={11} style={{display:"inline",marginRight:3,verticalAlign:"middle"}}/>Location</span>
+                         <span style={{ color: "#0F172A", fontWeight: 700, textAlign: "right" }}>{activeChatInfo.visitor_location || "Unknown"}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                         <span style={{ color: "#64748B", fontWeight: 600 }}><Globe size={11} style={{display:"inline",marginRight:3,verticalAlign:"middle"}}/>Browser</span>
+                         <span style={{ color: "#0F172A", fontWeight: 700, maxWidth: 140, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={activeChatInfo.visitor_browser}>
+                           {activeChatInfo.visitor_browser || "Unknown"}
+                         </span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                         <span style={{ color: "#64748B", fontWeight: 600 }}>Source URL</span>
+                         <span style={{ color: "#2563EB", fontWeight: 700, maxWidth: 140, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={activeChatInfo.visitor_url}>
+                           <a href={activeChatInfo.visitor_url} target="_blank" rel="noopener noreferrer">{activeChatInfo.visitor_url || "Unknown"}</a>
+                         </span>
+                      </div>
+                      <div style={{ marginTop: 10 }}>
+                        <button onClick={() => {
+                            navigator.clipboard.writeText(JSON.stringify({
+                              name: activeChatInfo.visitor_name,
+                              email: activeChatInfo.visitor_email,
+                              phone: activeChatInfo.visitor_phone,
+                              ip: activeChatInfo.visitor_ip,
+                              location: activeChatInfo.visitor_location,
+                              url: activeChatInfo.visitor_url,
+                              browser: activeChatInfo.visitor_browser,
+                              os: activeChatInfo.visitor_os,
+                            }, null, 2));
+                         }} 
+                         className="btn-primary" style={{ width: "100%", justifyContent: "center", display: "flex", alignItems: "center", gap: 5 }}>
+                           <Copy size={13} /> Copy JSON Lead
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Inbound Chats */}
                 <div className="section-card" style={{ maxHeight: 420, display: "flex", flexDirection: "column" }}>

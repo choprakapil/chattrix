@@ -177,6 +177,9 @@
           email: panel.querySelector("#cx-email").value.trim(),
           phone: fullPhone,
           message: panel.querySelector("#cx-message").value.trim(),
+          url: window.location.href,
+          browser: navigator.userAgent,
+          os: navigator.platform,
         };
         var apiUrl = pathBase + "/api/chat/start";
 
@@ -371,7 +374,7 @@
         unreadCount = 0;
         setBadge(0);
         if (!state.chatId) {
-          socket.emit("visitor_opened_chat", { propertyId: propertyId });
+          socket.emit("visitor_opened_chat", { propertyId: propertyId, url: window.location.href });
           renderPreChat();
         }
       } else {
@@ -384,7 +387,7 @@
 
     /* ── Socket events ── */
     socket.on("connect", function () {
-      socket.emit("join_property", { propertyId: propertyId });
+      socket.emit("join_property", { propertyId: propertyId, url: window.location.href });
       /* Load greeting */
       fetch(pathBase + "/api/widget/property/" + propertyId)
         .then(function (r) { return r.json(); })
