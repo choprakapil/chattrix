@@ -4,11 +4,12 @@
   if (!scriptTag) return;
   var propertyId = scriptTag.getAttribute("data-property-id");
   if (!propertyId) return;
-  var base = new URL(scriptTag.src).origin;
+  var originBase = new URL(scriptTag.src).origin;
+  var pathBase = scriptTag.src.split("/widget.js")[0];
 
   /* ── Load socket.io lazily ── */
   var socketScript = document.createElement("script");
-  socketScript.src = base + "/socket.io/socket.io.js";
+  socketScript.src = pathBase + "/socket.io/socket.io.js";
   socketScript.async = true;
   socketScript.onload = init;
   document.head.appendChild(socketScript);
@@ -87,8 +88,9 @@
     root.insertBefore(panel, fab);
 
     /* ── Socket connection ── */
-    var socket = window.io(base, { 
-      path: "/chat/socket.io",
+    var socketPath = pathBase.replace(originBase, "") + "/socket.io";
+    var socket = window.io(originBase, { 
+      path: socketPath,
       reconnection: true, 
       transports: ["polling"] 
     });
@@ -176,7 +178,7 @@
           phone: fullPhone,
           message: panel.querySelector("#cx-message").value.trim(),
         };
-        var apiUrl = base + "/api/chat/start";
+        var apiUrl = pathBase + "/api/chat/start";
 
         console.log("[Chattrix Widget] ── Form payload:", payload);
         console.log("[Chattrix Widget] property_id:", propertyId);
@@ -340,7 +342,7 @@
 
     /* ── Load messages ── */
     function loadMessages() {
-      fetch(base + "/api/chat/" + state.chatId + "/messages")
+      fetch(pathBase + "/api/chat/" + state.chatId + "/messages")
         .then(function (r) { return r.json(); })
         .then(function (msgs) {
           var wrap = panel.querySelector("#cx-msgs");
@@ -384,7 +386,7 @@
     socket.on("connect", function () {
       socket.emit("join_property", { propertyId: propertyId });
       /* Load greeting */
-      fetch(base + "/api/widget/property/" + propertyId)
+      fetch(pathBase + "/api/widget/property/" + propertyId)
         .then(function (r) { return r.json(); })
         .then(function (d) { if (d.custom_greeting) fab.title = d.custom_greeting; })
         .catch(function () {});
@@ -393,7 +395,7 @@
       if (saved) {
         try {
           var parsed = JSON.parse(saved);
-          fetch(base + "/api/chat/" + parsed.chatId + "/status")
+          fetch(pathBase + "/api/chat/" + parsed.chatId + "/status")
             .then(function (r) { return r.json(); })
             .then(function (s) {
               if (s.status === "closed") {
