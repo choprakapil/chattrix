@@ -1,10 +1,11 @@
 const { query } = require("../db");
 
 function registerSocketHandlers(io, onlineAgents) {
-  function mapUserSocket(socket, user) {
+  async function mapUserSocket(socket, user) {
     socket.data.user = user;
     if (user.role === "agent") {
       onlineAgents.set(user.id, socket.id);
+      await query("UPDATE agents SET status = 'online' WHERE id = ?", [user.id]);
       io.emit("agent_status_change", { agentId: user.id, status: "online" });
     }
   }
@@ -62,9 +63,13 @@ function registerSocketHandlers(io, onlineAgents) {
 
     socket.on("disconnect", async () => {
       if (socket.data.user?.role === "agent") {
-        onlineAgents.delete(socket.data.user.id);
-        await query("UPDATE agents SET status = 'offline' WHERE id = ?", [socket.data.user.id]);
-        io.emit("agent_status_change", { agentId: socket.data.user.id, status: "offline" });
+        // Only set offline if this is the currently active socket for this agent
+        // This prevents page refreshes from marking them offline right after they reconnect
+        if (onlineAgents.get(socket.data.user.id) === socket.id) {
+          onlineAgents.delete(socket.data.user.id);
+          await query("UPDATE agents SET status = 'offline' WHERE id = ?", [socket.data.user.id]);
+          io.emit("agent_status_change", { agentId: socket.data.user.id, status: "offline" });
+        }
       }
     });
   });
