@@ -36,6 +36,11 @@ rsync -av --progress \
   --exclude "public" \
   --exclude "*.log" \
   backend/ ${REMOTE_HOST}:${REMOTE_DIR}/backend/
+
+echo ">>> Syncing widget script..."
+rsync -av --progress \
+  backend/public/widget.js ${REMOTE_HOST}:${REMOTE_DIR}/backend/public/widget.js
+
 echo -e "${GREEN}✅ Backend source files synced.${RESET}"
 
 # ── Step 3: Sync Frontend Build & Landing Page ─────────────
